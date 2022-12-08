@@ -1,4 +1,4 @@
-package com.myanmarking.adventsofcode.advents_of_code_2022
+package com.myanmarking.adventsofcode.advents_of_code_2022.q007
 
 sealed class Node {
     class Directory(
@@ -32,12 +32,8 @@ sealed class Node {
         }
     }
 
-    class File(
+    data class File(
         val name: String,
         val size: Int
-    ) : Node() {
-        override fun toString(): String {
-            return "File(name='$name', size=$size)"
-        }
-    }
+    ) : Node()
 }
