@@ -1150,7 +1150,7 @@ class aof_07 : BaseTest<Int> {
 
         // find all of the directories with a total size of at most 100000
         println(
-            "answer1: " + getAllDirectories(fileSystem.child)
+            "answer1: " + fileSystem.getAllDirectories()
                 .map { it.totalSize }
                 .filter { it <= 100_000 }
                 .sum()
@@ -1164,32 +1164,11 @@ class aof_07 : BaseTest<Int> {
 
         val spaceRequired = minUnusedSpace - unusedSpace
 
-       println("""
-           totalDiskSpace: $totalDiskSpace
-           minUnusedSpace: $minUnusedSpace
-           totalDirectorySize: $totalDirectorySize
-           unusedSpace: $unusedSpace
-           spaceRequired: $spaceRequired
-       """.trimIndent())
-
-        println(
-            "answer2: " + getAllDirectories(fileSystem.child)
+       println(
+            "answer2: " + fileSystem.getAllDirectories()
                 .map { it.totalSize }
                 .filter { it >= spaceRequired }
                 .min()
         )
-    }
-
-    private fun getAllDirectories(
-        directory: List<Node>
-    ): List<Node.Directory> {
-        val directories = mutableListOf<Node.Directory>()
-        for (d in directory) {
-            if (d is Node.Directory) {
-                directories.add(d)
-                directories.addAll(getAllDirectories(d.child))
-            }
-        }
-        return directories
     }
 }

@@ -17,6 +17,19 @@ sealed class Node {
         override fun toString(): String {
             return "Directory:(name='$name', child=$child, totalSize: $totalSize)"
         }
+
+        fun getAllDirectories(
+            directory: List<Node> = this.child
+        ): List<Directory> {
+            val directories = mutableListOf<Directory>()
+            for (d in directory) {
+                if (d is Directory) {
+                    directories.add(d)
+                    directories.addAll(getAllDirectories(d.child))
+                }
+            }
+            return directories
+        }
     }
 
     class File(
