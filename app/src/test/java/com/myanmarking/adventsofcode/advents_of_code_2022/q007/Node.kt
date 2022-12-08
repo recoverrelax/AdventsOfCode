@@ -20,15 +20,13 @@ sealed class Node {
 
         fun getAllDirectories(
             directory: List<Node> = this.child
-        ): List<Directory> {
-            val directories = mutableListOf<Directory>()
-            for (d in directory) {
-                if (d is Directory) {
-                    directories.add(d)
-                    directories.addAll(getAllDirectories(d.child))
-                }
-            }
-            return directories
+        ) = deepFlatten(directory)
+        fun findDirectoryByName(name: String) = this.child
+            .filterIsInstance<Directory>()
+            .first { it.name == name }
+
+        fun add(child: Node){
+            this.child.add(child)
         }
     }
 
@@ -37,3 +35,12 @@ sealed class Node {
         val size: Int
     ) : Node()
 }
+
+private fun deepFlatten(nodes: List<Node>): List<Node.Directory> =
+    nodes
+        .filterIsInstance<Node.Directory>()
+        .plus(
+            nodes.filterIsInstance<Node.Directory>()
+                .map { deepFlatten(it.child) }
+                .flatten().toList()
+        )

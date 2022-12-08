@@ -1,14 +1,9 @@
 package com.myanmarking.adventsofcode.advents_of_code_2022.q006
 
-import com.myanmarking.adventsofcode.utils.readFile
-import org.junit.Assert
-import org.junit.Test
+import com.myanmarking.adventsofcode.utils.AdventsOfCodeIntTest
 
-class Question_006 {
-
-    private val input: String = this.javaClass.readFile("input_06")
-
-    private fun solve(chartCount: Int): Int {
+class Question_006: AdventsOfCodeIntTest() {
+    private fun solve(input: String, chartCount: Int): Int {
         val inputChar = input.toCharArray()
         inputChar.forEachIndexed { index, _ ->
             val elements = List(chartCount) { i ->
@@ -22,9 +17,6 @@ class Question_006 {
         return 0
     }
 
-    @Test
-    fun test() {
-        Assert.assertEquals(solve(4), 1658)
-        Assert.assertEquals(solve(14), 2260)
-    }
+    override fun answer1(input: String) = solve(input, 4)
+    override fun answer2(input: String) = solve(input, 14)
 }

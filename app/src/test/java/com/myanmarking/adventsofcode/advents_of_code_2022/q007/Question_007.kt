@@ -1,12 +1,8 @@
 package com.myanmarking.adventsofcode.advents_of_code_2022.q007
 
-import com.myanmarking.adventsofcode.utils.readFile
-import org.junit.Test
-import java.lang.UnsupportedOperationException
+import com.myanmarking.adventsofcode.utils.AdventsOfCodeIntTest
 
-class Question_007 {
-    private val input: String = this.javaClass.readFile("input_07")
-
+class Question_007: AdventsOfCodeIntTest() {
     private fun buildFileTree(input: String): Node.Directory {
         val commands = input.lines()
 
@@ -25,9 +21,12 @@ class Question_007 {
                 }
 
                 command.startsWith("dir") -> {
-                    val dirName = command.removePrefix("dir ")
-                    val directory = Node.Directory(name = dirName, parent = currentDirectory)
-                    currentDirectory.child.add(directory)
+                    currentDirectory.add(
+                        Node.Directory(
+                            name = command.removePrefix("dir "),
+                            parent = currentDirectory
+                        )
+                    )
                     index += 1
                 }
 
@@ -37,22 +36,20 @@ class Question_007 {
                 }
 
                 command.startsWith("$ cd") -> {
-                    val dirName = command.removePrefix("$ cd ")
-                    // always followed by ls
-                    currentDirectory =
-                        currentDirectory.child.first { it is Node.Directory && it.name == dirName } as Node.Directory
+                    currentDirectory = currentDirectory
+                        .findDirectoryByName(
+                            command.removePrefix("$ cd ")
+                        )
 
                     // always followed by ls
                     index += 2
                 }
 
                 command.first().isDigit() -> {
-                    val split = command.split(" ")
-                    val size = split[0].toInt()
-                    val name = split[1]
+                    val (size, name) = command.split(" ")
                     val file = Node.File(
                         name = name,
-                        size = size
+                        size = size.toInt()
                     )
                     currentDirectory.child.add(file)
                     index += 1
@@ -66,31 +63,28 @@ class Question_007 {
         return tree
     }
 
-    @Test
-    fun test() {
+    override fun answer1(input: String): Int {
         val fileSystem: Node.Directory = buildFileTree(input)
 
-        // find all of the directories with a total size of at most 100000
-        println(
-            "answer1: " + fileSystem.getAllDirectories()
-                .map { it.totalSize }
-                .filter { it <= 100_000 }
-                .sum()
-        )
+        return fileSystem.getAllDirectories()
+            .map { it.totalSize }
+            .filter { it <= 100_000 }
+            .sum()
+    }
+
+    override fun answer2(input: String): Int {
+        val fileSystem: Node.Directory = buildFileTree(input)
 
         val totalDiskSpace = 70_000_000
         val minUnusedSpace = 30_000_000
         val totalDirectorySize = fileSystem.totalSize
-
         val unusedSpace = totalDiskSpace - totalDirectorySize
-
         val spaceRequired = minUnusedSpace - unusedSpace
 
-        println(
-            "answer2: " + fileSystem.getAllDirectories()
-                .map { it.totalSize }
-                .filter { it >= spaceRequired }
-                .min()
-        )
+        return fileSystem.getAllDirectories()
+            .also { print("Size: ${it.size}") }
+            .map { it.totalSize }
+            .filter { it >= spaceRequired }
+            .min()
     }
 }
