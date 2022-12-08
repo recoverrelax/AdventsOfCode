@@ -82,7 +82,6 @@ class Question_007: AdventsOfCodeIntTest() {
         val spaceRequired = minUnusedSpace - unusedSpace
 
         return fileSystem.getAllDirectories()
-            .also { print("Size: ${it.size}") }
             .map { it.totalSize }
             .filter { it >= spaceRequired }
             .min()
