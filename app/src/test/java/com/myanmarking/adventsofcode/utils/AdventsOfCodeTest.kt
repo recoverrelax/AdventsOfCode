@@ -20,7 +20,8 @@ abstract class AdventsOfCodeTest<T> {
             
             Test: ${this::class.java.simpleName.replace("Question_", "")}
                 Answer1 is: ${answer1(input)}
-                Answer2 is: ${answer1(input)}
+                Answer2 is: ${answer2(input)}
+                
         """.trimIndent())
     }
 }
