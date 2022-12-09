@@ -2,16 +2,7 @@ package com.myanmarking.adventsofcode.advents_of_code_2022.q002
 
 import com.myanmarking.adventsofcode.utils.AdventsOfCodeIntTest
 
-class Question_002 : AdventsOfCodeIntTest() {
-    data class Play(
-        val opponent: Card,
-        val me: Card
-    ) {
-        private val result: Result = me.compare(opponent)
-        val totalScore: Int = result.score + me.score
-    }
-
-    private fun scores1(input: String): List<Int> {
+class Question_002 : AdventsOfCodeIntTest() {private fun scores1(input: String): List<Int> {
         return input.lines()
             .map { line ->
                 val (opponent, me) = line.split(" ")
