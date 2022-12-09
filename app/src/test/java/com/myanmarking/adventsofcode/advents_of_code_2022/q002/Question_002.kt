@@ -1,36 +1,13 @@
 package com.myanmarking.adventsofcode.advents_of_code_2022.q002
 
 import com.myanmarking.adventsofcode.utils.AdventsOfCodeIntTest
-import java.lang.UnsupportedOperationException
 
 class Question_002 : AdventsOfCodeIntTest() {
-    enum class Card(val score: Int) {
-        ROCK(1),
-        PAPER(2),
-        SCISSORS(3)
-    }
-
-    enum class Result(val score: Int) {
-        WIN(6),
-        LOSE(0),
-        DRAW(3)
-    }
-
     data class Play(
         val opponent: Card,
         val me: Card
     ) {
-        private val result: Result = if (me == opponent) {
-            Result.DRAW
-        } else {
-            val win = when (me) {
-                Card.ROCK -> opponent == Card.SCISSORS
-                Card.PAPER -> opponent == Card.ROCK
-                Card.SCISSORS -> opponent == Card.PAPER
-            }
-            if (win) Result.WIN else Result.LOSE
-        }
-
+        private val result: Result = me.compare(opponent)
         val totalScore: Int = result.score + me.score
     }
 
@@ -39,18 +16,8 @@ class Question_002 : AdventsOfCodeIntTest() {
             .map { line ->
                 val (opponent, me) = line.split(" ")
                 Play(
-                    opponent = when (opponent) {
-                        "A" -> Card.ROCK
-                        "B" -> Card.PAPER
-                        "C" -> Card.SCISSORS
-                        else -> throw UnsupportedOperationException()
-                    },
-                    me = when (me) {
-                        "X" -> Card.ROCK
-                        "Y" -> Card.PAPER
-                        "Z" -> Card.SCISSORS
-                        else -> throw UnsupportedOperationException()
-                    }
+                    opponent = Card.from(opponent),
+                    me = Card.from(me)
                 )
             }
             .map { it.totalScore }
@@ -61,33 +28,10 @@ class Question_002 : AdventsOfCodeIntTest() {
             .map { line ->
                 val (opponent, me) = line.split(" ")
 
-                val cardOpponent = when (opponent) {
-                    "A" -> Card.ROCK
-                    "B" -> Card.PAPER
-                    "C" -> Card.SCISSORS
-                    else -> throw UnsupportedOperationException()
-                }
+                val cardOpponent = Card.from(opponent)
 
-                val cardMe = when (me) {
-                    "X" -> Result.LOSE
-                    "Y" -> Result.DRAW
-                    "Z" -> Result.WIN
-                    else -> throw UnsupportedOperationException()
-                }.let { result ->
-                    when(result){
-                        Result.WIN -> when(cardOpponent){
-                            Card.ROCK -> Card.PAPER
-                            Card.PAPER -> Card.SCISSORS
-                            Card.SCISSORS -> Card.ROCK
-                        }
-                        Result.LOSE -> when(cardOpponent){
-                            Card.ROCK -> Card.SCISSORS
-                            Card.PAPER -> Card.ROCK
-                            Card.SCISSORS -> Card.PAPER
-                        }
-                        Result.DRAW -> cardOpponent
-                    }
-                }
+                val cardMe = Result.from(me)
+                    .getCardForResult(cardOpponent)
 
                 Play(
                     opponent = cardOpponent,
